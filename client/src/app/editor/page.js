@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import {
     Eye,
@@ -31,7 +31,7 @@ const IEEEPreview = dynamic(
 import { useSearchParams } from 'next/navigation';
 import { documentsAPI } from '@/services/api';
 
-export default function EditorPage() {
+function EditorContent() {
     const searchParams = useSearchParams();
     const documentId = searchParams.get('id');
     const exportContainerRef = useRef(null);
@@ -412,5 +412,17 @@ export default function EditorPage() {
                 )}
             </div>
         </div>
+    );
+}
+
+export default function EditorPage() {
+    return (
+        <Suspense fallback={
+            <div className="flex h-screen items-center justify-center bg-[var(--background)]">
+                <Loader2 className="w-8 h-8 animate-spin text-[var(--primary)]" />
+            </div>
+        }>
+            <EditorContent />
+        </Suspense>
     );
 }
